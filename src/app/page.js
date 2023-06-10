@@ -1,113 +1,111 @@
-import Image from 'next/image'
+"use client"
+import React, { useState } from "react";
+import "./globals.css";
+import Values from "values.js";
+import { SketchPicker } from "react-color";
 
-export default function Home() {
+export default function App() {
+
+  const [colorCode, setColorCode] = useState(new Values("#008cff"));
+  const [compColorCode, setCompColorCode] = useState(new Values("#ff7300"));
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <div className="App">
+      <h1>Color Palette Generator</h1>
+      <Input handleGenerate={(event) => {
+        event.preventDefault();
+        setColorCode(new Values("#" + event.target.elements.colorCode.value));
+        setCompColorCode(getComplementaryColor(new Values("#" + event.target.elements.colorCode.value)));
+        console.log(compColorCode.hex);
+      }}/>
+      <p> Selected Color</p>
+      <ChosenColor color={colorCode}/>
+      <h3>The following are tints</h3>
+      <SquareTints color={colorCode}/>
+      <h3>The following are shades</h3>
+      <SquareShades color={colorCode}/>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+      <p>Complementary Color - {compColorCode.hex}</p>
+      <ChosenColor color={compColorCode} />
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+      <h3>The following are tints</h3>
+      <SquareTints color={compColorCode}/>
+      <h3>The following are shades</h3>
+      <SquareShades color={compColorCode}/>
+    </div>
+  );
+}
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+function Input({handleGenerate}){
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+  return(
+    <div className="input">
+      <form onSubmit={handleGenerate}>
+        <input type="text" defaultValue="008cff" name="colorCode"/>
+        <button type="submit">Generate</button>
+      </form>
+    </div>
   )
+}
+
+function ChosenColor({color}){
+
+  return(
+    <div className="chosencolor">
+      <div className="square" style={{backgroundColor: color.hexString()}}>
+      </div>
+    </div>
+  )
+}
+
+function Square({color, index}){
+
+  return (
+    <div className="square" style={{backgroundColor: color.hexString(), color: getFontColor(color.rgb)}}>
+      <p>{color.hexString()}</p>
+    </div>
+  );
+}
+
+function SquareTints({color}){
+
+  let tints = color.tints(10);
+
+  return (
+    <div className="squareContainer">
+      {tints.map((tint, index) => <Square color={tint} index={index}/>)}
+    </div>
+  );
+}
+
+function SquareShades({color}){
+
+  let shades = color.shades(10);
+
+  return (
+    <div className="squareContainer">
+      {shades.map(shade => <Square color={shade} />)}
+    </div>
+  );
+}
+
+
+function getFontColor(rgb){
+
+  let brigthness = Math.round(((parseInt(rgb[0]) * 299) + (parseInt(rgb[1]) * 587) + (parseInt(rgb[2]) * 114)) /1000);
+
+  if(brigthness > 125){
+    return "000000";
+  }
+  
+  return "#ffffff";
+}
+
+function getComplementaryColor(color){
+
+  let complementaryColor = color.rgb.map(v => 255 - v);
+  
+  return new Values("#" + complementaryColor[0].toString(16).padStart(2, '0') + 
+                      complementaryColor[1].toString(16).padStart(2,'0') + 
+                      complementaryColor[2].toString(16).padStart(2,'0'));
 }
