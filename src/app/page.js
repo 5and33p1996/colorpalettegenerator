@@ -11,6 +11,7 @@ export default function App() {
 
   const [colorCode, setColorCode] = useState(new Values("#008cff"));
   const [compColorCode, setCompColorCode] = useState(new Values("#ff7300"));
+  const [error, setError] = useState(false);
 
   return (
     <div style={{backgroundImage: `url(
@@ -30,16 +31,20 @@ export default function App() {
         <div className="inputRowContainer">
 
           <div>
-            <Input handleGenerate={(event) => {
+            <Input error={error} handleGenerate={(event) => {
+              try{
               event.preventDefault();
               setColorCode(new Values("#" + event.target.elements.colorCode.value));
               setCompColorCode(getComplementaryColor(new Values("#" + event.target.elements.colorCode.value)));
-              console.log(compColorCode.hex);
+              setError(false);
+              }catch(e){
+                setError(true);
+              }
             }} />
           </div>
 
           <div className="chosenColorDiv">
-            <Typography variant="h6" gutterBottom> Selected Color</Typography>
+            <Typography variant="h6" gutterBottom>Selected Color</Typography>
             <Square color={colorCode} />
           </div>
 
@@ -78,7 +83,7 @@ export default function App() {
   );
 }
 
-function Input({handleGenerate}){
+function Input({error, handleGenerate}){
 
   const button = (props) => (<button {...props} type="submit"/>);
 
@@ -86,9 +91,10 @@ function Input({handleGenerate}){
       <form onSubmit={handleGenerate} className="input">
         
         <div className="textField">
-          <TextField label="Color Code"
+          <TextField error={error} label="Color Code"
             variant="filled" type="text"
             defaultValue="008cff" name="colorCode"
+            helperText={error?"Invalid Color Code":""}
             InputProps={{
               startAdornment: <InputAdornment position="start">#</InputAdornment>,
             }} />
